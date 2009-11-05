@@ -1,0 +1,105 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Creates a filter which will convert content into an iFrame and link to it.
+ * Useful for speeding up ad provider load times.
+ */
+
+/**
+ * Implementation of hook_filter().
+ */
+function iframe_filter_filter($op, $delta = 0, $format = -1, $text = '', $cache_id = 0) {
+  switch ($op) {
+    case 'list':
+      return array(t('iFrame'));
+
+    case 'no cache':
+      return;
+
+    case 'description':
+      return t('Save text content to a file and link to it from an iFrame, reducing load time for the current page. This MUST be the last filter run on an input filter.');
+
+    case 'process':
+      return iframe_filter_parse($text);
+
+    case 'settings':
+      return;
+
+    default:
+      return $text;
+  }
+}
+
+
+/**
+ * Implementation of hook_filter_tips().
+ */
+function iframe_filter_filter_tips($delta, $format, $long = FALSE) {
+  return t('The content of this field will be saved to a file and included on the original page in an iFrame.');
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function iframe_filter_theme() {
+  return array(
+    'iframe_filter_page' => array(
+      'arguments' => array('content' => NULL),
+      'template' => 'iframe-filter-page',
+    ),
+    'iframe_filter_iframe' => array(
+      'arguments' => array('src' => NULL, 'width' => NULL, 'height' => NULL),
+      'template' => 'iframe-filter-iframe',
+    ),
+  );
+}
+
+/**
+ * Find the height and width of the ad and wrap it in an iFrame.
+ */
+function iframe_filter_parse($text) {
+
+  // Sanity check
+  $files_dir = file_directory_path() .'/iframe_filter';
+  if (!file_check_directory($files_dir, FILE_CREATE_DIRECTORY)) {
+    return $text;
+  }
+
+  $filename = md5($text) .'.html';
+  $destination_file = $files_dir .'/'. $filename;
+
+  // Look for a width= and height= attributes in this text (most obvious).
+  if (preg_match('/width[ ]*=[ ]*"(\d+)"/', $text, $matches)) {
+    $width = $matches[1];
+  }
+  if (preg_match('/height[ ]*=[ ]*"(\d+)"/', $text, $matches)) {
+    $height = $matches[1];
+  }
+
+  // Look for a [width]x[height] type attributes in this text.
+  if ((!isset($width) || !isset($height)) && preg_match('/=(\d+)x(\d+)/', $text, $matches)) {
+    $width = $matches[1];
+    $height = $matches[2];
+  }
+
+  // Only attempt to create an iFrame if a width and height are found.
+  if (isset($width) && isset($height)) {
+    $html_page = theme('iframe_filter_page', $text);
+    file_put_contents($destination_file, $html_page);
+  }
+
+  if (file_exists($destination_file)) {
+    $iframe = theme('iframe_filter_iframe', base_path() . $destination_file, $width, $height);
+    return $iframe;
+  }
+  else {
+    return $text;
+  }
+}
+
+function template_iframe_filter_page_preprocess(&$vars) {
+  $vars['site_title'] = variable_get('site_name', '');
+}
+
