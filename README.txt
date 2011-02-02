@@ -45,7 +45,7 @@ Bug reports, feature suggestions and latest developments:
   placed inside an iframe, make sure that the syntax is correct.
 
 
--- CONTACT --
+-- CREDITS --
 
 This project is maintained by Javier Reartes (javierreartes)
 
