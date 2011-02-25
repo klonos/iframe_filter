@@ -1,4 +1,3 @@
-; $Id$
 name = iFrame Filter
 description = "Creates a filter which will convert content into an iFrame and link to it. Useful for speeding up external content load times."
 core = 7.x
