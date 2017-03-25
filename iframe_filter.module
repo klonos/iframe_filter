@@ -9,8 +9,8 @@
  */
 function iframe_filter_filter_info() {
   $filters['iframe'] = array(
-    'title' => t('iFrame'),
-    'description' => t('Save text content to a file and link to it from an iFrame, reducing load time for the current page. This MUST be the last filter run on an input filter.'),
+    'title' => t('Embed in iframe'),
+    'description' => t('Save text content to a file and link to it from an iframe, reducing load time for the current page. This MUST be the last filter run on an input filter.'),
     'process callback' => 'iframe_filter_iframe_process',
     'tips callback' => 'iframe_filter_iframe_tips',
     'cache' => FALSE,
