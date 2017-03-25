@@ -1,25 +1,22 @@
 <?php
-
 /**
  * @file
  * Creates a filter which will convert content into an iFrame and link to it.
- * Useful for speeding up ad provider load times.
  */
 
 /**
  * Implements hook_filter_info().
  */
- function iframe_filter_filter_info() {
+function iframe_filter_filter_info() {
   $filters['iframe'] = array(
-    'title' => t('iFrame'), 
-    'description' => t('Save text content to a file and link to it from an iFrame, reducing load time for the current page. This MUST be the last filter run on an input filter.'), 
-    'process callback' => 'iframe_filter_iframe_process', 
+    'title' => t('iFrame'),
+    'description' => t('Save text content to a file and link to it from an iFrame, reducing load time for the current page. This MUST be the last filter run on an input filter.'),
+    'process callback' => 'iframe_filter_iframe_process',
     'tips callback' => 'iframe_filter_iframe_tips',
-	'cache' => FALSE,
+    'cache' => FALSE,
   );
   return $filters;
 }
-
 
 /**
  * Implements hook_filter_tips().
@@ -29,8 +26,8 @@ function iframe_filter_iframe_tips($filter, $format, $long) {
 }
 
 /**
-* Implements hook_filter_FILTER_process()
-*/
+ * Implements hook_filter_FILTER_process().
+ */
 function iframe_filter_iframe_process($text, $filter, $format, $langcode, $cache, $cache_id) {
   return iframe_filter_parse($text);
 }
@@ -42,25 +39,29 @@ function iframe_filter_theme() {
   return array(
     'iframe_filter_page' => array(
       'variables' => array('content' => NULL),
-      'template' => 'iframe-filter-page',
+      'template' => 'templates/iframe-filter-page',
     ),
     'iframe_filter_iframe' => array(
-      'variables' => array('src' => NULL, 'width' => NULL, 'height' => NULL),
-      'template' => 'iframe-filter-iframe',
+      'variables' => array(
+        'src' => NULL,
+        'width' => NULL,
+        'height' => NULL,
+        ),
+      'template' => 'templates/iframe-filter-iframe',
     ),
   );
 }
 
 function template_preprocess_iframe_filter_page(&$vars) {
-  $vars['site_title'] = variable_get('site_name', '');
+  $vars['site_title'] = config_get('system.core', 'site_name');
 }
 
 /**
  * Finds the height and width of the iframe and wrap into it.
  */
-function iframe_filter_parse($text){
+function iframe_filter_parse($text) {
   // Sanity check
-  $files_dir = variable_get('file_public_path', conf_path() . '/files') . '/iframe_filter';
+  $files_dir = config_get('system.core', 'file_public_path', 'files') . '/iframe_filter';
   if (!file_prepare_directory($files_dir, FILE_CREATE_DIRECTORY)) {
     return $text;
   }
@@ -89,10 +90,13 @@ function iframe_filter_parse($text){
   }
 
   if (file_exists($destination_file)) {
-    $iframe = theme('iframe_filter_iframe', array('src' => base_path() . $destination_file, 'width' => $width, 'height' => $height));
+    $config = array(
+      'src' => base_path() . $destination_file,
+      'width' => $width,
+      'height' => $height,
+    );
+    $iframe = theme('iframe_filter_iframe', $config);
     return $iframe;
   }
-  else {
-    return $text;
-  }
+  return $text;
 }
