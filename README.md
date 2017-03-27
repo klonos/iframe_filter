@@ -26,7 +26,7 @@ None.
 1. Create a block or content that you want to be rendered within an iframe,
    using the previously configured text format.
 2. Add an HTML comment that contains the height and width of the iframe using
-   one of the following formats: `<!-- =wxh -->` or
+   one of the following formats: `<!-- =wxh -->` or 
    `<!-- width="w" height="h" -->`, replacing the w and h are integers with the
    desired dimensions.
 3. Save.
@@ -39,7 +39,8 @@ Example:
 
 ## Troubleshooting
 
-* If there isn't a valid width or height, the content won't be placed inside an iframe.
+* If there isn't a valid width or height, the content won't be placed inside an
+iframe.
 
 ## Issues
 
@@ -48,14 +49,15 @@ https://github.com/backdrop-contrib/iframe_filter/issues
 
 ## Current Maintainers
 
-- Jon Peck (https://github.com/fluxsauce)
+- [Jon Peck](https://github.com/fluxsauce)
 - Seeking additional maintainers
 
 ## Credits
 
-- Ported to Backdrop CMS by Jon Peck (https://github.com/fluxsauce).
-- The Drupal version of this project is maintained by Javier Reartes (https://www.drupal.org/javierreartes)
-- Originally created by Nathan Haug (https://www.drupal.org/quicksketch)
+- Ported to Backdrop CMS by [Jon Peck](https://github.com/fluxsauce).
+- The Drupal version of this project is maintained by
+  [Javier Reartes](https://www.drupal.org/javierreartes)
+- Originally created by [Nathan Haug](https://www.drupal.org/quicksketch)
 
 ## License
 
